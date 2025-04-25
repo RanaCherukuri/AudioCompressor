@@ -1,200 +1,137 @@
-// All wavesurfer options in one place
+let wavesurfer;
+let originalBuffer = null;
+let originalSize = 0;
 
-import WaveSurfer from 'wavesurfer.js'
+const upload = document.getElementById('upload');
+const slider = document.getElementById('compression-slider');
+const sampleRateDisplay = document.getElementById('sample-rate');
+const originalSizeDisplay = document.getElementById('original-size');
+const compressedSizeDisplay = document.getElementById('compressed-size');
+const playPauseBtn = document.getElementById('playpause');
 
-const options = {
-  /** HTML element or CSS selector (required) */
-  container: 'body',
-  /** The height of the waveform in pixels */
-  height: 128,
-  /** The width of the waveform in pixels or any CSS value; defaults to 100% */
-  width: 300,
-  /** Render each audio channel as a separate waveform */
-  splitChannels: false,
-  /** Stretch the waveform to the full height */
-  normalize: false,
-  /** The color of the waveform */
-  waveColor: '#ff4e00',
-  /** The color of the progress mask */
-  progressColor: '#dd5e98',
-  /** The color of the playpack cursor */
-  cursorColor: '#ddd5e9',
-  /** The cursor width */
-  cursorWidth: 2,
-  /** Render the waveform with bars like this: ▁ ▂ ▇ ▃ ▅ ▂ */
-  barWidth: NaN,
-  /** Spacing between bars in pixels */
-  barGap: NaN,
-  /** Rounded borders for bars */
-  barRadius: NaN,
-  /** A vertical scaling factor for the waveform */
-  barHeight: NaN,
-  /** Vertical bar alignment **/
-  barAlign: '',
-  /** Minimum pixels per second of audio (i.e. zoom level) */
-  minPxPerSec: 1,
-  /** Stretch the waveform to fill the container, true by default */
-  fillParent: true,
-  /** Audio URL */
-  url: '/examples/audio/audio.wav',
-  /** Whether to show default audio element controls */
-  mediaControls: true,
-  /** Play the audio on load */
-  autoplay: false,
-  /** Pass false to disable clicks on the waveform */
-  interact: true,
-  /** Allow to drag the cursor to seek to a new position */
-  dragToSeek: false,
-  /** Hide the scrollbar */
-  hideScrollbar: false,
-  /** Audio rate */
-  audioRate: 1,
-  /** Automatically scroll the container to keep the current position in viewport */
-  autoScroll: true,
-  /** If autoScroll is enabled, keep the cursor in the center of the waveform during playback */
-  autoCenter: true,
-  /** Decoding sample rate. Doesn't affect the playback. Defaults to 8000 */
-  sampleRate: 8000,
-}
-
-const wavesurfer = WaveSurfer.create(options)
-
-wavesurfer.on('ready', () => {
-  wavesurfer.setTime(10)
-})
-
-// Generate a form input for each option
-const schema = {
-  height: {
-    value: 128,
-    min: 10,
-    max: 512,
-    step: 1,
-  },
-  width: {
-    value: 300,
-    min: 10,
-    max: 2000,
-    step: 1,
-  },
-  cursorWidth: {
-    value: 1,
-    min: 0,
-    max: 10,
-    step: 1,
-  },
-  minPxPerSec: {
-    value: 1,
-    min: 1,
-    max: 1000,
-    step: 1,
-  },
-  barWidth: {
-    value: 0,
-    min: 1,
-    max: 30,
-    step: 1,
-  },
-  barHeight: {
-    value: 1,
-    min: 0.1,
-    max: 4,
-    step: 0.1,
-  },
-  barGap: {
-    value: 0,
-    min: 1,
-    max: 30,
-    step: 1,
-  },
-  barRadius: {
-    value: 0,
-    min: 1,
-    max: 30,
-    step: 1,
-  },
-  peaks: {
-    type: 'json',
-  },
-  audioRate: {
-    value: 1,
-    min: 0.1,
-    max: 4,
-    step: 0.1,
-  },
-  sampleRate: {
-    value: 8000,
-    min: 8000,
-    max: 48000,
-    step: 1000,
-  },
-}
-
-const form = document.createElement('form')
-Object.assign(form.style, {
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '1rem',
-  padding: '1rem',
-})
-document.body.appendChild(form)
-
-for (const key in options) {
-  if (options[key] === undefined) continue
-  const isColor = key.includes('Color')
-
-  const label = document.createElement('label')
-  Object.assign(label.style, {
-    display: 'flex',
-    alignItems: 'center',
-  })
-
-  const span = document.createElement('span')
-  Object.assign(span.style, {
-    textTransform: 'capitalize',
-    width: '7em',
-  })
-  span.textContent = `${key.replace(/[a-z0-9](?=[A-Z])/g, '$& ')}: `
-  label.appendChild(span)
-
-  const input = document.createElement('input')
-  const type = typeof options[key]
-  Object.assign(input, {
-    type: isColor ? 'color' : type === 'number' ? 'range' : type === 'boolean' ? 'checkbox' : 'text',
-    name: key,
-    value: options[key],
-    checked: options[key] === true,
-  })
-  if (input.type === 'text') input.style.flex = 1
-  if (options[key] instanceof HTMLElement) input.disabled = true
-
-  if (schema[key]) {
-    Object.assign(input, schema[key])
+function createWaveSurfer() {
+  if (wavesurfer) {
+    wavesurfer.destroy();
   }
 
-  label.appendChild(input)
-  form.appendChild(label)
+  wavesurfer = WaveSurfer.create({
+    container: '#waveform',
+    waveColor: '#e74c3c',
+    progressColor: '#c0392b',
+    height: 200,
+  });
+}
 
-  input.oninput = () => {
-    if (type === 'number') {
-      options[key] = input.valueAsNumber
-    } else if (type === 'boolean') {
-      options[key] = input.checked
-    } else if (schema[key] && schema[key].type === 'json') {
-      options[key] = JSON.parse(input.value)
-    } else {
-      options[key] = input.value
+function updateCompression(rateFactor) {
+  if (!originalBuffer) return;
+
+  const newSampleRate = originalBuffer.sampleRate / rateFactor;
+
+  const offlineCtx = new OfflineAudioContext(
+    originalBuffer.numberOfChannels,
+    originalBuffer.duration * newSampleRate,
+    newSampleRate
+  );
+
+  const source = offlineCtx.createBufferSource();
+  source.buffer = originalBuffer;
+  source.connect(offlineCtx.destination);
+  source.start(0);
+
+  offlineCtx.startRendering().then(resampledBuffer => {
+    const length = resampledBuffer.length * resampledBuffer.numberOfChannels * 2;
+    const compressedSize = Math.floor(length);
+
+    compressedSizeDisplay.textContent = compressedSize + ' bytes';
+
+    // Convert to blob and use object URL
+    const wavBlob = bufferToWave(resampledBuffer);
+    const url = URL.createObjectURL(wavBlob);
+    wavesurfer.load(url);
+  });
+}
+
+function bufferToWave(abuffer) {
+  let numOfChan = abuffer.numberOfChannels,
+    length = abuffer.length * numOfChan * 2 + 44,
+    buffer = new ArrayBuffer(length),
+    view = new DataView(buffer),
+    channels = [],
+    i,
+    sample,
+    offset = 0,
+    pos = 0;
+
+  setUint32(0x46464952); // \"RIFF\"
+  setUint32(length - 8); // file length - 8
+  setUint32(0x45564157); // \"WAVE\"
+
+  setUint32(0x20746d66); // \"fmt \" chunk
+  setUint32(16); // length = 16
+  setUint16(1); // PCM (uncompressed)
+  setUint16(numOfChan);
+  setUint32(abuffer.sampleRate);
+  setUint32(abuffer.sampleRate * 2 * numOfChan); // avg. bytes/sec
+  setUint16(numOfChan * 2); // block-align
+  setUint16(16); // 16-bit (hardcoded)
+
+  setUint32(0x61746164); // \"data\" - chunk
+  setUint32(length - pos - 4); // chunk length
+
+  for (i = 0; i < abuffer.numberOfChannels; i++)
+    channels.push(abuffer.getChannelData(i));
+
+  while (pos < length) {
+    for (i = 0; i < numOfChan; i++) {
+      sample = Math.max(-1, Math.min(1, channels[i][offset])); // clamp
+      sample = (0.5 + sample * 32767) | 0;
+      view.setInt16(pos, sample, true);
+      pos += 2;
     }
-    wavesurfer.setOptions(options)
-    textarea.value = JSON.stringify(options, null, 2)
+    offset++;
+  }
+
+  return new Blob([buffer], { type: "audio/wav" });
+
+  function setUint16(data) {
+    view.setUint16(pos, data, true);
+    pos += 2;
+  }
+
+  function setUint32(data) {
+    view.setUint32(pos, data, true);
+    pos += 4;
   }
 }
 
-const textarea = document.createElement('textarea')
-Object.assign(textarea.style, {
-  width: '100%',
-  height: Object.keys(options).length + 1 + 'rem',
-})
-textarea.value = JSON.stringify(options, null, 2)
-textarea.readOnly = true
-form.appendChild(textarea)
+upload.addEventListener('change', function (e) {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  originalSize = file.size;
+  originalSizeDisplay.textContent = originalSize + ' bytes';
+
+  const reader = new FileReader();
+  reader.onload = function (event) {
+    const arrayBuffer = event.target.result;
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    audioCtx.decodeAudioData(arrayBuffer, function (buffer) {
+      originalBuffer = buffer;
+      createWaveSurfer();
+      updateCompression(parseInt(slider.value));
+    });
+  };
+  reader.readAsArrayBuffer(file);
+});
+
+slider.addEventListener('input', function () {
+  sampleRateDisplay.textContent = slider.value;
+  updateCompression(parseInt(slider.value));
+});
+
+playPauseBtn.addEventListener('click', () => {
+  if (wavesurfer) {
+    wavesurfer.playPause();
+    playPauseBtn.textContent = wavesurfer.isPlaying() ? 'Pause' : 'Play';
+  }
+});

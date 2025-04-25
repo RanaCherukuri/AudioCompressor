@@ -3,6 +3,3 @@ Audio Visualization:
 
  YouTube Link youtube-dl
  - https://github.com/katspaugh/wavesurfer.js/issues/1871#issuecomment-592515700
-
- Compression
- - lame.js
