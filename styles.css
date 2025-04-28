@@ -4,6 +4,7 @@ body {
   text-align: center;
   background: #121212;
   color: #e0e0e0;
+  height: 100%;
 }
 
 #waveform {
@@ -19,7 +20,22 @@ body {
   padding: 20px;
   border-top: 10px solid #cc7a00;
   /* size: 100%; */
+  margin-top: 20px;
 }
+
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+.home {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;          
+}
+
 
 #compression-slider {
   width: 80%;
