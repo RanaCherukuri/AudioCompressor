@@ -62,16 +62,6 @@ html, body {
   color: white;
 }
 
-#playpause {
-  margin-top: 10px;
-  padding: 10px 20px;
-  background: #219150;
-  border: none;
-  cursor: pointer;
-  font-size: 16px;
-  color: white;
-}
-
 .stats {
   margin-top: 20px;
   font-size: 18px;

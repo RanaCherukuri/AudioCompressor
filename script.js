@@ -16,8 +16,8 @@ function initWaveSurfer(compressionFactor = 1) {
     wavesurfer.destroy();
   }
 
-  // MORE compression -> MORE lines -> thinner bars, smaller gaps
-  const barWidth = Math.max(1, (compressionFactor)*2);
+  // Configure waveform based on compression factor
+  const barWidth = Math.max(1, (compressionFactor) * 2);
   const barGap = Math.max(0, (compressionFactor));
 
   wavesurfer = WaveSurfer.create({
@@ -35,12 +35,12 @@ function initWaveSurfer(compressionFactor = 1) {
 
 function loadAudioFromBlob(blob) {
   const url = URL.createObjectURL(blob);
-  initWaveSurfer(parseInt(slider.value));  // init w/ compression factor
+  initWaveSurfer(parseInt(slider.value));  // init with compression factor
   wavesurfer.load(url);
   audioPlayer.src = url;
 
   wavesurfer.on('ready', () => {
-    // sync wavesurfer position to native audio when seeking
+    // Sync wavesurfer position to native audio when seeking
     audioPlayer.ontimeupdate = () => {
       const audioDuration = audioPlayer.duration || 1;
       const audioTime = audioPlayer.currentTime;
@@ -50,13 +50,13 @@ function loadAudioFromBlob(blob) {
       }
     };
 
-    // sync audio element if seeking in waveform
+    // Sync audio element if seeking in waveform
     wavesurfer.on('seek', (progress) => {
       const newTime = progress * audioPlayer.duration;
       audioPlayer.currentTime = newTime;
     });
 
-    // syncing audio playing/pausing
+    // Syncing audio playing/pausing
     audioPlayer.onplay = () => {
       if (!wavesurfer.isPlaying()) { wavesurfer.play(); }
       playPauseBtn.textContent = 'Pause';
@@ -72,33 +72,32 @@ function loadAudioFromBlob(blob) {
 function updateCompression(rateFactor) {
   if (!originalBuffer) return;
 
-  if (rateFactor === 1) {
-    compressedSizeDisplay.textContent = originalSize + ' bytes';
-    const file = upload.files[0];
-    const url = URL.createObjectURL(file);
-    initWaveSurfer(rateFactor);
-    wavesurfer.load(url);
-    audioPlayer.src = url;
-    return;
-  } else {
-    const newSampleRate = originalBuffer.sampleRate / rateFactor;
-    const offlineCtx = new OfflineAudioContext(
-      originalBuffer.numberOfChannels,
-      Math.floor(originalBuffer.duration * newSampleRate),
-      newSampleRate
-    );
+  // Calculate the new sample rate based on the compression factor
+  const newSampleRate = Math.max(originalBuffer.sampleRate / rateFactor, 3000);
 
-    const source = offlineCtx.createBufferSource();
-    source.buffer = originalBuffer;
-    source.connect(offlineCtx.destination);
-    source.start(0);
+  // Create an OfflineAudioContext with the new sample rate
+  const offlineCtx = new OfflineAudioContext(
+    originalBuffer.numberOfChannels,
+    Math.floor(originalBuffer.length * newSampleRate / originalBuffer.sampleRate),
+    newSampleRate
+  );
 
-    offlineCtx.startRendering().then(resampledBuffer => {
-      const wavBlob = bufferToWave(resampledBuffer);
-      compressedSizeDisplay.textContent = wavBlob.size + ' bytes';
-      loadAudioFromBlob(wavBlob);
-    });
-  }
+  const source = offlineCtx.createBufferSource();
+  source.buffer = originalBuffer;
+  source.connect(offlineCtx.destination);
+  source.start(0);
+
+  offlineCtx.startRendering().then(resampledBuffer => {
+    // Convert to WAV format after resampling
+    const wavBlob = bufferToWave(resampledBuffer);
+
+    // Calculate and update the compressed size correctly
+    const compressedSize = wavBlob.size;
+    compressedSizeDisplay.textContent = `${compressedSize} bytes`;
+
+    // Load the audio data for playback
+    loadAudioFromBlob(wavBlob);
+  });
 }
 
 function bufferToWave(buffer) {
