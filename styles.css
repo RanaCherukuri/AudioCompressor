@@ -2,24 +2,25 @@ body {
   font-family: Arial, sans-serif;
   margin: 0;
   text-align: center;
-  background: #121212;
-  color: #e0e0e0;
+  background: #e0f7ff;
+  color: #003366;
   height: 100%;
 }
 
 #waveform {
   width: 100%;
   height: 125px;
-  background: #1e1e1e;
-  border-bottom: 10px solid #333;
+  background: #cceeff;
+  border-bottom: 10px solid #99d6ff;
 }
 
 .container {
-  background: #333;
-  color: #e0e0e0;
+  background: #ffffff;
+  color: #003366;
   padding: 20px;
-  border-top: 10px solid #cc7a00;
-  /* size: 100%; */
+  border-top: 10px solid #66c2ff;
+  width: 100%;
+  box-sizing: border-box;
   margin-top: 20px;
 }
 
@@ -34,6 +35,8 @@ html, body {
   justify-content: center;
   align-items: center;
   min-height: 100vh;          
+  width: 100vw;
+  background: #e0f7ff;
 }
 
 
@@ -43,19 +46,19 @@ html, body {
   -webkit-appearance: none;
   appearance: none;
   height: 8px;
-  background: white;
+  background: black;
   border-radius: 4px;
   transition: background 0.3s ease;
 }
 
 #compression-slider:hover {
-  background: white;
+  background: darkblue;
 }
 
 #upload {
   margin-top: 10px;
   padding: 10px 20px;
-  background: #cc7a00;
+  background: #66c2ff;
   border: none;
   cursor: pointer;
   font-size: 16px;
@@ -68,7 +71,7 @@ html, body {
 }
 
 .stats strong {
-  color: #cc7a00;
+  color: #007acc;
 }
 
 #audioplayer {

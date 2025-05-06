@@ -8,7 +8,6 @@ const slider = document.getElementById('compression-slider');
 const sampleRateDisplay = document.getElementById('sample-rate');
 const originalSizeDisplay = document.getElementById('original-size');
 const compressedSizeDisplay = document.getElementById('compressed-size');
-const playPauseBtn = document.getElementById('playpause');
 const audioPlayer = document.getElementById('audioplayer');
 
 function initWaveSurfer(compressionFactor = 1) {
@@ -18,7 +17,7 @@ function initWaveSurfer(compressionFactor = 1) {
 
   // Configure waveform based on compression factor
   const barWidth = Math.max(1, (compressionFactor) * 2);
-  const barGap = Math.max(0, (compressionFactor));
+  const barGap = Math.max(0, (compressionFactor)* 0.5);
 
   wavesurfer = WaveSurfer.create({
     container: '#waveform',
@@ -55,17 +54,6 @@ function loadAudioFromBlob(blob) {
       const newTime = progress * audioPlayer.duration;
       audioPlayer.currentTime = newTime;
     });
-
-    // Syncing audio playing/pausing
-    audioPlayer.onplay = () => {
-      if (!wavesurfer.isPlaying()) { wavesurfer.play(); }
-      playPauseBtn.textContent = 'Pause';
-    };
-
-    audioPlayer.onpause = () => {
-      if (wavesurfer.isPlaying()) { wavesurfer.pause(); }
-      playPauseBtn.textContent = 'Play';
-    };
   });
 }
 
@@ -162,10 +150,4 @@ slider.addEventListener('input', () => {
   const factor = parseInt(slider.value);
   sampleRateDisplay.textContent = `${factor}x`;
   updateCompression(factor);
-});
-
-playPauseBtn.addEventListener('click', () => {
-  if (!wavesurfer) return;
-  if (audioPlayer.paused) { audioPlayer.play(); }
-  else { audioPlayer.pause(); }
 });
