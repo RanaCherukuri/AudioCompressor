@@ -1,57 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8" />
     <title>Lossy Audio Compression</title>
     <link rel="stylesheet" href="styles.css" />
-  </head>
-  <body>
+    <link rel="icon" href="audioCompressorLogo.png" type="image/png">
+    <script src="https://unpkg.com/wavesurfer.js"></script>
+    <style src="styles.css"></style>
+</head>
+<body>
 
     <div class="title">
-      <h1><strong>Audio Compressor</strong></h1>
-      <p>Created by pd 3 AOOD G/T</p>
-      <img id="logo" src="audioCompressorLogo.png">
+        <h1><strong>Audio Compressor</strong></h1>
+        <p>Created by pd 3 AOOD G/T</p>
+        <img id="logo" src="audioCompressorLogo.png">
     </div>
 
 
     <div class="home">
-      <div id="waveform"></div>
-      <audio
-        id="audioplayer"
-        controls
-        style="width: 80%; margin-top: 20px"
-      ></audio>
+        <div id="waveform"></div>
+        <audio
+            id="audioplayer"
+            controls
+            style="width: 80%; margin-top: 20px"
+        ></audio>
 
-      <div class="container">
-        <input
-          type="range"
-          min="1"
-          max="100"
-          step="1"
-          value="1"
-          id="compression-slider"
-        />
-        <p>Move the slider to adjust compression of the audio.</p>
+        <div class="container">
+            <input
+                type="range"
+                min="1"
+                max="100"
+                step="1"
+                value="1"
+                id="compression-slider"
+            />
+            <p>Move the slider to adjust compression of the audio.</p>
 
-        <input type="file" id="upload" accept="audio/*" />
+            <input type="file" id="upload" accept="audio/*" />
 
-        <div class="stats">
-          <p>
-            <strong>Compression Factor:</strong>
-            <span id="sample-rate">1x</span>
-          </p>
-          <p>
-            <strong>Original:</strong> <span id="original-size">0 bytes</span>
-          </p>
-          <p>
-            <strong>Compressed:</strong>
-            <span id="compressed-size">0 bytes</span>
-          </p>
+            <div class="stats">
+                <p>
+                    <strong>Compression Factor:</strong>
+                    <span id="sample-rate">1x</span>
+                </p>
+                <p>
+                    <strong>Original:</strong> <span id="original-size">0 bytes</span>
+                </p>
+                <p>
+                    <strong>Compressed:</strong>
+                    <span id="compressed-size">0 bytes</span>
+                </p>
+            </div>
         </div>
-      </div>
     </div>
-
-    <script src="https://unpkg.com/wavesurfer.js"></script>
     <script src="script.js"></script>
-  </body>
+
+</body>
 </html>
