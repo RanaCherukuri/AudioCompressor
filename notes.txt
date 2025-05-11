@@ -1,11 +1,11 @@
-Audio Visualization:
- - Import WaveSurfer library
-
- YouTube Link youtube-dl
- - https://github.com/katspaugh/wavesurfer.js/issues/1871#issuecomment-592515700
-
 Code.org Colors:
 Primary: #FFFFFF (white)
 Secondary 1: #0093A4 (dark teal)
 Secondary 2: #59CAD3 (light teal)
 Secondary 2: #FFA400 (goldenrod)
+
+
+TODO (in order):
+- Fix audio visualization to make it blockier as sampling increases
+- Add a dropdown to change upload type
+  - Support links
