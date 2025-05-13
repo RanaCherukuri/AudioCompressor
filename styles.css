@@ -24,7 +24,7 @@ body {
 }
 
 .container {
-  background: #dcd2c8;
+  background: #c8d1dc;
   color: #284f56;
   padding: 20px;
   border-top: 10px solid #0093A4;
@@ -55,13 +55,13 @@ html, body {
   -webkit-appearance: none;
   appearance: none;
   height: 8px;
-  background: #d2afb3;
+  background: #ffffff;
   border-radius: 4px;
   transition: background 0.3s ease;
 }
 
 #compression-slider:hover {
-  background: #715053;
+  background: #ffffff;
 }
 
 #upload {
@@ -71,7 +71,7 @@ html, body {
   border: none;
   cursor: pointer;
   font-size: 16px;
-  color: #dcd2c8;
+  color: #c8d0dc;
 }
 
 .stats {
