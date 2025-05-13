@@ -23,10 +23,10 @@ Code Organization:
 
 Developers:
 - Batool: Our glorious team lead 🫡
-- Alex: did all the Wavesurfer.js stuff
-- Rana: did all the other cool stuff
+- Alex: Wavesurfer.js stuff
+- Rana: Other cool backend guy (and cleans up after everyone's hot messes)
 - Cindy: Front-end stuff (and wrote this README)
-- Raiyan: Looked at the code or something idk
+- Raiyan: Linkedin warrior
 
 Questions? Concerns? Bugs? Contact michael_hobson@hcpss.org!
 Google doc: https://tinyurl.com/audiocompressorAOOD
