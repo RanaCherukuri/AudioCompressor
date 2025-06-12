@@ -64,7 +64,7 @@ function adjustBarWidth(currentSampleRate) {
         media: document.getElementById('audioplayer'),
         normalize: false,
         barRadius: 30,
-        barWidth: Math.max(1, 1 currentSampleRate),
+        barWidth: Math.max(1, 2/currentSampleRate),
         barGap: 0
     });
     console.log(currentSampleRate);
