@@ -53,6 +53,7 @@ function adjustBarWidth(currentSampleRate) {
     if (!duration) return;
     let waveformWidth = wavesurfer.drawer.width;
     let samplesPerPixel = currentSampleRate / waveformWidth;
+    console.log(currentSampleRate + " is the current sample rate");
     wavesurfer.setOptions({
       container: '#waveform',
         waveColor: '#ddd',
